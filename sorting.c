@@ -33,6 +33,8 @@ void selection_sorts(int list[], int num_in_list){
                 swap(&list[i], &list[j]);
             }
         }
+        // wall is invisible, don't need to declare
+        // swap(find_the_smallest(list,i), list[i]);
     }
 }
 void insertion_sorts(int list[],int num_in_list){
