@@ -7,17 +7,17 @@
 
 struct piggies{
     int num;
-    char name[NAME_MAX];
+    char name;
     float weight;
 };
 
 void read_data(struct piggies *pig, int len);
-void write_result(struct piggies *pig, int len);
+void write_result(struct piggies **pig, int len);
 void swap(int *smallest, int *first_element, size_t size);
-void compare(const void *pa, const void *pb);
-void selection_sorts(void *base, size_t num, size_t size, void (*compare)(const void *, const void *));
-void bubble_sorts(void *base, size_t num, size_t size, void (*compare)(const void *, const void *));
-void insertion_sorts(void *base, size_t num, size_t size, void(*compare)(const void *,const void *));
+int compare(const void *pa, const void *pb);
+void selection_sorts(void *base, size_t num, size_t size, int (*compare)(const void *, const void *));
+void bubble_sorts(void *base, size_t num, size_t size, int (*compare)(const void *, const void *));
+void insertion_sorts(void *base, size_t num, size_t size, int(*compare)(const void *,const void *));
 
 
 
@@ -52,19 +52,23 @@ void read_data(struct piggies *pig, int len){
     FILE *fp;
     fp = fopen("data.txt", "r");
     for(int i = 0 ; i < len ; i++){
-        fscanf(fp,"%2d %c %.2f\n",&(pig->num), &(pig->name) , &(pig->weight));
+        fscanf(fp,"%d %c %f",&(pig->num), &(pig->name) , &(pig->weight));
+        fgetc(fp);
+        // debug 吃進來就吃錯了
+        // printf("%d %c %f\n",(pig->num), (pig->name) , (pig->weight));
         pig++;
+
     }
     fclose(fp);
 
 }
 
-void write_result(struct piggies *pig, int len){
+void write_result(struct piggies **pigptr, int len){
     FILE *fresult;
     fresult = fopen("result.txt","w");
     for (int i = 0; i < len ; i++){
-        fprintf(fresult, "%2d %c %.2f\n", (pig->num),(pig->name),(pig->weight));
-        pig++;
+        fprintf(fresult, "%2d %c %.2f\n", ((*pigptr)->num),((*pigptr)->name),((*pigptr)->weight));
+        pigptr++;
     }
 }
 
@@ -72,25 +76,27 @@ void write_result(struct piggies *pig, int len){
 void swap(int *smallest, int *first_element, size_t size){
     void *middle = malloc(size);
     memcpy(middle, smallest,size);
-    memcmp(smallest, first_element, size);
-    memcmp(first_element, middle, size);
+    memcpy(smallest, first_element, size);
+    memcpy(first_element, middle, size);
     free(middle);
     
 }
-void compare(const void *pa, const void *pb){
-    const struct piggies *p1 = pa;
-    const struct piggies *p2 = pb;
-    if((p1->num) != (p2->num))
-        return p1->num - p2->num;
-    if((p1->name) != (p2->name))
-        return p1->name - p2->name;
-    return p1->weight - p2->weight;
+int compare(const void *pa, const void *pb){
+    const struct piggies **p1 = pa;
+    const struct piggies **p2 = pb;
+    if(((*p1)->num) != ((*p2)->num))
+        return (*p1)->num - (*p2)->num;
+    if(((*p1)->name) != ((*p2)->name))
+        return (*p1)->name - (*p2)->name;
+    if (((*p1)->weight - (*p2)->weight)>0)
+        return 1;
+    return 0;
 }
-void selection_sorts(void *base, size_t num, size_t size, void (*compare)(const void *, const void *)){
+void selection_sorts(void *base, size_t num, size_t size, int (*compare)(const void *, const void *)){
     int i,j;
     for(i = 0; i < num; i++ ){
         for (j = i + 1 ; j < num ;j++){
-            if(((*compare)(base + (i * size), base + (j * size))) > 0 ){//compareSize控制
+            if((*compare)((base + (i * size)), (base + (j * size))) > 0 ){//compareSize控制
                 swap((base + (i * size)), (base + (j * size)),size);
             }
         }
@@ -98,7 +104,7 @@ void selection_sorts(void *base, size_t num, size_t size, void (*compare)(const 
 } 
 
 
-void bubble_sorts(void *base, size_t num, size_t size, void (*compare)(const void *, const void *)){
+void bubble_sorts(void *base, size_t num, size_t size, int (*compare)(const void *, const void *)){
     int i, j;
     for(i = num - 1; i > 0; i--){
         for(j = 0; j < 1; j++){
@@ -109,7 +115,7 @@ void bubble_sorts(void *base, size_t num, size_t size, void (*compare)(const voi
     }
 }
 
-void insertion_sorts(void *base, size_t num, size_t size, void(*compare)(const void *,const void *)){
+void insertion_sorts(void *base, size_t num, size_t size, int(*compare)(const void *,const void *)){
     int i;
     for(i = 1; i < num; i++){
         int j = i - 1;
