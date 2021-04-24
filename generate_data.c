@@ -12,7 +12,7 @@ int main(){
 
     FILE *fp;
     fp = fopen(FILE_NAME,"w");
-    write_generate_data(fp,30);
+    write_generate_data(fp,100);
     fclose(fp);
 
     return 0;

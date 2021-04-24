@@ -20,8 +20,10 @@ void permutation(int *array, int l, int r){
     int i ;
     if(l == r){
         print_list(array,r+1);
+        // printf("test i: %d\n",i);
     }
     else{
+
         for(i = l; i <= r; i++){
             swap((array + l),(array + i));
             permutation(array, l + 1, r);
@@ -46,10 +48,10 @@ void combination(int* arr, int* data, int n, int k, int level, int index){
 }
 
 int main(){
-    int list[5] = {1,2,3};
+    int list[5] = {1,2,3,4};
     printf("permutation\n");
-    permutation(list, 0, 2);
-    printf("combination\n");
+    permutation(list, 0, 3);
+    printf("\ncombination\n");
     int data[2];
     combination(list,data,3,2,0,-1);
     return 0;
