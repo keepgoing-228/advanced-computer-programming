@@ -21,6 +21,8 @@ void insertion_sorts(void *base, size_t num, size_t size, int (*compare)(const v
 void merge_sorts(void *base, size_t num, size_t size, int (*compare)(const void *, const void *));
 void merge(void *base, int head, int mid, int tail, size_t size, int (*compare)(const void *, const void *));
 void merge_sort(void *base, int head, int tail, size_t size, int (*compare)(const void *, const void *));
+void heap_sorts(void *base, size_t num, size_t size, int(*compare)(const void *, const void *));
+void heapify(void *base, size_t num, size_t size, int i , int(*compare)(const void *, const void *));
 
 
 int main()
